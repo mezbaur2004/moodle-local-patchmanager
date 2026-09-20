@@ -298,12 +298,65 @@ class api {
     }
 
     /**
-     * Permission gate shared by the web UI and the CLI.
+     * Actions that are authorised through this plugin's manage gate.
      *
+     * @var string[]
+     */
+    public const MANAGED_ACTIONS = ['apply', 'reapply', 'restore', 'verify', 'acknowledge'];
+
+    /**
+     * Actions that record a decision in the database and write no code.
+     *
+     * @var string[]
+     */
+    public const RECORD_ONLY_ACTIONS = ['verify', 'acknowledge'];
+
+    /**
+     * Whether an action writes to the code directory.
+     *
+     * Only these actions need $CFG->local_patchmanager_allowwebapply, because
+     * that switch exists to control writing code from a browser. Verifying or
+     * acknowledging writes one database row and touches no file, so requiring
+     * the same switch would force a site to enable browser code-writing just to
+     * record a decision about code it already has.
+     *
+     * Unknown actions are treated as code-changing, so a future action is
+     * gated at the stricter level until it is listed above deliberately.
+     *
+     * @param string $action
+     * @return bool
+     */
+    public static function action_changes_code(string $action): bool {
+        return !in_array($action, self::RECORD_ONLY_ACTIONS, true);
+    }
+
+    /**
+     * Whether the current user may perform one named action, without throwing.
+     *
+     * This is the single authorisation rule for every caller: the admin page,
+     * the CLI and the dashboard block all ask this, so none of them restates
+     * which actions need the web-apply switch.
+     *
+     * @param string $action one of MANAGED_ACTIONS
+     * @param bool $web true when the request came through the browser
+     * @return bool
+     */
+    public static function can_manage_action(string $action, bool $web): bool {
+        return self::can_manage($web && self::action_changes_code($action));
+    }
+
+    /**
+     * Enforce permission for one named action.
+     *
+     * @param string $action one of MANAGED_ACTIONS
      * @param bool $web true when the request came through the browser
      * @return void
      * @throws \moodle_exception
      */
+    public static function require_manage_action(string $action, bool $web): void {
+        self::require_manage($web && self::action_changes_code($action));
+    }
+
     /**
      * Whether the current user may perform a write action, without throwing.
      *
@@ -337,6 +390,17 @@ class api {
         return true;
     }
 
+    /**
+     * Permission gate shared by the web UI and the CLI.
+     *
+     * Callers that act on a named action should use require_manage_action()
+     * instead, so the rule about which actions need the web-apply switch lives
+     * in exactly one place.
+     *
+     * @param bool $web true when the web-apply switch must also be satisfied
+     * @return void
+     * @throws \moodle_exception
+     */
     public static function require_manage(bool $web): void {
         if (!is_siteadmin()) {
             throw new \moodle_exception('errnotsiteadmin', 'local_patchmanager');

@@ -166,7 +166,11 @@ if ($definition !== null && $confirm) {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new moodle_exception('errpostrequired', 'local_patchmanager', $baseurl);
     }
-    api::require_manage(true);
+    // Action-aware: apply, reapply and restore additionally require the
+    // web-apply switch, because they write code. Verify and acknowledge record
+    // a decision and write no file, so they need only site admin plus the
+    // manage capability, alongside the POST, sesskey and confirmation above.
+    api::require_manage_action($action, true);
 
     switch ($action) {
         case 'apply':
