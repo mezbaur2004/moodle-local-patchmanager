@@ -44,6 +44,7 @@ $string['hunkstate_applicable'] = 'can be applied';
 $string['hunkstate_ambiguous_payload'] = 'our block appears more than once';
 $string['hunkstate_anchor_missing'] = 'anchor not found';
 $string['hunkstate_anchor_ambiguous'] = 'anchor found more than once';
+$string['hunkstate_moved'] = 'our block is present but no longer joined to its anchor';
 $string['hunkstate_conflict'] = 'conflict';
 
 // Reasons.
@@ -57,6 +58,7 @@ $string['reasonhunk_applicable'] = '{$a->file}: hunk "{$a->hunk}" is not applied
 $string['reasonhunk_ambiguous_payload'] = '{$a->file}: hunk "{$a->hunk}" appears more than once';
 $string['reasonhunk_anchor_missing'] = '{$a->file}: the upstream context for hunk "{$a->hunk}" no longer exists';
 $string['reasonhunk_anchor_ambiguous'] = '{$a->file}: the upstream context for hunk "{$a->hunk}" is not unique';
+$string['reasonhunk_moved'] = '{$a->file}: hunk "{$a->hunk}" is present but has been moved away from its anchor';
 $string['reasonhunk_conflict'] = '{$a->file}: hunk "{$a->hunk}" conflicts with the current code';
 
 // Table and attributes.
@@ -135,6 +137,7 @@ $string['errunknownpatch'] = 'Unknown customisation: {$a}';
 $string['errfilenotwritable'] = 'File is not writable: {$a}';
 $string['errdirnotwritable'] = 'Directory is not writable: {$a}';
 $string['errfileunreadable'] = 'File cannot be read: {$a}';
+$string['erractionnotallowed'] = '"{$a->action}" is not available while the state is "{$a->state}".';
 $string['errnotapplicable'] = 'This customisation cannot be applied while its state is "{$a}".';
 $string['errnothingtorestore'] = 'There is nothing to restore while the state is "{$a}".';
 $string['errpayloadpresent'] = 'The block for hunk "{$a}" is already present in the file.';

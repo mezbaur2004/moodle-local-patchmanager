@@ -63,6 +63,43 @@ class state {
     }
 
     /**
+     * Whether apply is a legal transition from this state.
+     *
+     * @param string $state
+     * @return bool
+     */
+    public static function can_apply(string $state): bool {
+        return $state === self::NOT_APPLIED;
+    }
+
+    /**
+     * Whether reapply is a legal transition from this state.
+     *
+     * Reapply restores first and then applies, so it is the repair path for a
+     * customisation that is on disk but stale or damaged.
+     *
+     * @param string $state
+     * @return bool
+     */
+    public static function can_reapply(string $state): bool {
+        return in_array($state, [self::APPLIED, self::OUTDATED, self::PARTIAL, self::CONFLICT], true);
+    }
+
+    /**
+     * Whether restore is a legal transition from this state.
+     *
+     * CONFLICT is excluded on purpose. In that state none of our markers are on
+     * disk, so there is nothing of ours to remove, and writing a stored backup
+     * over the file would discard whatever upstream now ships there.
+     *
+     * @param string $state
+     * @return bool
+     */
+    public static function can_restore(string $state): bool {
+        return in_array($state, [self::APPLIED, self::OUTDATED, self::PARTIAL], true);
+    }
+
+    /**
      * Human readable label.
      *
      * @param string $state

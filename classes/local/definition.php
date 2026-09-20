@@ -163,7 +163,14 @@ class definition {
         if ($realfile === false || !is_file($realfile)) {
             throw new definition_exception("target file does not exist: '{$relpath}'");
         }
-        if ($realroot === false || strpos($realfile, $realroot) !== 0) {
+        // Compare against the resolved root plus a separator. A bare prefix test
+        // would accept a sibling directory whose name merely begins with the
+        // root's name, for example mod/zoomevil alongside mod/zoom.
+        if ($realroot === false) {
+            throw new definition_exception("target file escapes the component directory: '{$relpath}'");
+        }
+        $realroot = rtrim($realroot, DIRECTORY_SEPARATOR);
+        if (strpos($realfile, $realroot . DIRECTORY_SEPARATOR) !== 0) {
             throw new definition_exception("target file escapes the component directory: '{$relpath}'");
         }
     }
