@@ -128,7 +128,13 @@ class detector {
             }
         }
         $markercount = array_sum($begins);
+        $endcount = array_sum($ends);
         $revisions = array_keys($begins);
+
+        // Any marker at all means some of our text is on disk. Counting only
+        // BEGIN markers would read a file carrying a lone END marker as
+        // completely untouched.
+        $totalmarkers = $markercount + $endcount;
 
         // Per hunk facts.
         $allapplied = true;
@@ -136,14 +142,23 @@ class detector {
         foreach ($hunks as $hunk) {
             $anchor = $hunk->anchor_for($file->eol);
             $payload = $hunk->payload_for($file->eol);
+            $appliedform = $hunk->applied_form($file->eol);
             $anchorcount = util::count($content, $anchor);
             $payloadcount = util::count($content, $payload);
+            $appliedcount = util::count($content, $appliedform);
 
+            // "Applied" means the payload sits exactly where this hunk type puts
+            // it, not merely that the payload exists somewhere in the file.
             $hunkstate = 'conflict';
-            if ($payloadcount === 1) {
+            if ($appliedcount === 1) {
                 $hunkstate = 'applied';
+            } else if ($appliedcount > 1) {
+                $hunkstate = 'ambiguous_payload';
             } else if ($payloadcount > 1) {
                 $hunkstate = 'ambiguous_payload';
+            } else if ($payloadcount === 1) {
+                // Our block is on disk but detached from its anchor.
+                $hunkstate = 'moved';
             } else if ($anchorcount === 1) {
                 $hunkstate = 'applicable';
             } else if ($anchorcount === 0) {
@@ -166,6 +181,7 @@ class detector {
                 'state' => $hunkstate,
                 'anchorcount' => $anchorcount,
                 'payloadcount' => $payloadcount,
+                'appliedcount' => $appliedcount,
                 'anchor' => $hunk->anchor,
                 'payload' => $hunk->payload,
             ];
@@ -173,7 +189,7 @@ class detector {
 
         $hunkcount = count($hunks);
 
-        if ($markercount === 0) {
+        if ($totalmarkers === 0) {
             if ($allapplicable) {
                 $file->state = state::NOT_APPLIED;
             } else {

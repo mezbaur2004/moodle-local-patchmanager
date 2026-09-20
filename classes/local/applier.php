@@ -160,6 +160,13 @@ class applier {
      * @return \stdClass
      */
     public static function reapply(definition $def, bool $dryrun = false): \stdClass {
+        if ($dryrun) {
+            // A dry run writes nothing, so the restore step leaves the patched
+            // file on disk and the apply precondition would never be met.
+            // Plan the apply against the content restore *would* have produced.
+            return self::reapply_dryrun($def);
+        }
+
         $restore = self::restore($def, $dryrun, true);
         if (!$restore->success) {
             $restore->messages[] = get_string('errreapplyaborted', 'local_patchmanager');
@@ -182,20 +189,78 @@ class applier {
     }
 
     /**
+     * Preview a reapply without writing anything.
+     *
+     * Restore is simulated in memory, and the apply plan is then built against
+     * that simulated content rather than against what is still on disk.
+     *
+     * @param definition $def
+     * @return \stdClass
+     */
+    protected static function reapply_dryrun(definition $def): \stdClass {
+        $result = self::new_result(true);
+
+        [$before] = detector::evaluate($def);
+        $result->statebefore = $before;
+        $result->state = $before;
+
+        $restoreplan = self::build_restore_plan($def, $result->messages);
+        if ($restoreplan === null) {
+            $result->messages[] = get_string('errreapplyaborted', 'local_patchmanager');
+            return $result;
+        }
+
+        // What each file would contain once restore had run.
+        $restored = [];
+        foreach (array_keys($def->files) as $relpath) {
+            if (isset($restoreplan[$relpath])) {
+                $restored[$relpath] = $restoreplan[$relpath]->new;
+                continue;
+            }
+
+            // Restore is a no-op for this file, so its current content stands.
+            $current = self::read_file($def->file_path($relpath), $result->messages);
+            if ($current === null) {
+                $result->messages[] = get_string('errreapplyaborted', 'local_patchmanager');
+                return $result;
+            }
+            $restored[$relpath] = $current;
+        }
+
+        $applyplan = self::build_apply_plan($def, $result->messages, $restored);
+        if ($applyplan === null) {
+            $result->messages[] = get_string('errreapplyaborted', 'local_patchmanager');
+            return $result;
+        }
+
+        $result->plan = $applyplan;
+        $result->success = true;
+        $result->messages[] = get_string('dryrunok', 'local_patchmanager');
+
+        return $result;
+    }
+
+    /**
      * Build the new content of every file of this patch.
      *
      * @param definition $def
      * @param string[] $messages
+     * @param array $contents relpath => content to plan against instead of reading
+     *                        from disk. Used by the reapply preview.
      * @return array|null relpath => entry, or null on failure
      */
-    protected static function build_apply_plan(definition $def, array &$messages): ?array {
+    protected static function build_apply_plan(definition $def, array &$messages, array $contents = []): ?array {
         $plan = [];
 
         foreach ($def->files as $relpath => $hunks) {
             $path = $def->file_path($relpath);
-            $old = self::read_file($path, $messages);
-            if ($old === null) {
-                return null;
+            if (array_key_exists($relpath, $contents)) {
+                $old = $contents[$relpath];
+            } else {
+                $old = self::read_file($path, $messages);
+                if ($old === null) {
+                    return null;
+                }
             }
 
             $eol = util::detect_eol($old);

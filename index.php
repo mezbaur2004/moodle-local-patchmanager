@@ -72,6 +72,28 @@ if ($action === 'check') {
     redirect($baseurl, get_string('checkdone', 'local_patchmanager'), null, \core\output\notification::NOTIFY_SUCCESS);
 }
 
+// Whether the current state permits the requested code change. Checked here on
+// the server, not merely by hiding a button on the status table.
+if ($definition !== null && in_array($action, $writeactions, true)) {
+    $currentstate = api::build_status($definition)->state;
+    $allowed = [
+        'apply' => \local_patchmanager\state::can_apply($currentstate),
+        'reapply' => \local_patchmanager\state::can_reapply($currentstate),
+        'restore' => \local_patchmanager\state::can_restore($currentstate),
+    ];
+
+    if (empty($allowed[$action])) {
+        $notifications[] = [
+            get_string('erractionnotallowed', 'local_patchmanager', (object) [
+                'action' => get_string('action_' . $action, 'local_patchmanager'),
+                'state' => \local_patchmanager\state::label($currentstate),
+            ]),
+            'error',
+        ];
+        $action = 'view';
+    }
+}
+
 // Confirmation step for everything that changes code or records a decision.
 if ($definition !== null && in_array($action, array_merge($writeactions, ['verify', 'acknowledge']), true) && !$confirm) {
     echo $OUTPUT->header();
@@ -82,7 +104,7 @@ if ($definition !== null && in_array($action, array_merge($writeactions, ['verif
 
     if (in_array($action, $writeactions, true)) {
         $preview = ($action === 'restore')
-                ? api::restore($definition, true, true)
+                ? api::restore($definition, true, false)
                 : (($action === 'reapply') ? api::reapply($definition, true) : api::apply($definition, true));
 
         foreach ($preview->messages as $message) {
@@ -154,7 +176,8 @@ if ($definition !== null && $confirm) {
             $result = api::reapply($definition);
             break;
         case 'restore':
-            $result = api::restore($definition, false, true);
+            // can_restore() has already gated this, so no force override.
+            $result = api::restore($definition, false, false);
             break;
         case 'verify':
             api::verify($definition, $note);

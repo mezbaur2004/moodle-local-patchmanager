@@ -101,6 +101,33 @@ class hunk {
     }
 
     /**
+     * The exact contiguous text this hunk leaves behind once applied.
+     *
+     * Detection compares against this rather than against the payload alone.
+     * A payload that is present but no longer joined to its anchor no longer
+     * runs where it was designed to run, so presence on its own is not
+     * evidence that the customisation is active.
+     *
+     * @param string $eol
+     * @return string
+     */
+    public function applied_form(string $eol): string {
+        $anchor = $this->anchor_for($eol);
+        $payload = $this->payload_for($eol);
+
+        switch ($this->type) {
+            case self::TYPE_INSERT_BEFORE:
+                return $payload . $anchor;
+            case self::TYPE_INSERT_AFTER:
+                return $anchor . $payload;
+            case self::TYPE_REPLACE:
+            default:
+                // The anchor is consumed, so the payload itself is the whole edit.
+                return $payload;
+        }
+    }
+
+    /**
      * Apply this hunk to the given content.
      *
      * The caller must already have checked that the anchor occurs exactly once.

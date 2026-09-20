@@ -35,32 +35,6 @@ function local_patchmanager_status_checks(): array {
     ];
 }
 
-/**
- * Refuse to uninstall while customisations are still on disk.
- *
- * Removing the engine while patched code remains would leave modifications
- * behind with nothing watching them.
- *
- * @return void
- * @throws moodle_exception
- */
-function local_patchmanager_pre_uninstall_hook(): void {
-    $active = [];
-
-    foreach (\local_patchmanager\api::get_statuses() as $key => $status) {
-        if (in_array($status->state, [
-            \local_patchmanager\state::APPLIED,
-            \local_patchmanager\state::OUTDATED,
-            \local_patchmanager\state::PARTIAL,
-        ], true)) {
-            $active[] = $key . ' (' . $status->state . ')';
-        }
-    }
-
-    if ($active) {
-        throw new moodle_exception('erruninstallactive', 'local_patchmanager', '', implode(', ', $active));
-    }
-
-    // Backups are deliberately left in moodledata: they are the only way back
-    // to stock code if something was missed.
-}
+// The uninstall guard lives in db/uninstall.php as xmldb_local_patchmanager_uninstall().
+// Moodle has no *_pre_uninstall_hook() callback, so a function of that name here
+// would never be called.
