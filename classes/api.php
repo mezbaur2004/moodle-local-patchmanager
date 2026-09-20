@@ -304,6 +304,39 @@ class api {
      * @return void
      * @throws \moodle_exception
      */
+    /**
+     * Whether the current user may perform a write action, without throwing.
+     *
+     * require_manage() is the enforcing gate and stays that way: it raises the
+     * specific error for each failure, and its capability check renders
+     * Moodle's own permission page. A caller that only needs to decide whether
+     * to *offer* an action, such as a dashboard block choosing which links to
+     * draw, cannot use it, because an exception is not an answer. This returns
+     * the same three conditions as a boolean so that no caller has to restate
+     * them and risk drifting from the rule this plugin enforces.
+     *
+     * This never grants anything. Every write path still goes through
+     * require_manage(), the confirmation screen, POST and sesskey.
+     *
+     * @param bool $web true when the request came through the browser
+     * @return bool
+     */
+    public static function can_manage(bool $web): bool {
+        if (!is_siteadmin()) {
+            return false;
+        }
+
+        if (!has_capability('local/patchmanager:manage', \context_system::instance())) {
+            return false;
+        }
+
+        if ($web && !env::webapply_allowed()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function require_manage(bool $web): void {
         if (!is_siteadmin()) {
             throw new \moodle_exception('errnotsiteadmin', 'local_patchmanager');
