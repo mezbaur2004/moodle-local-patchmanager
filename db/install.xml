@@ -51,7 +51,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="target" UNIQUE="false" FIELDS="targetcomponent, filepath"/>
+        <INDEX NAME="target" UNIQUE="false" FIELDS="filepath"/>
         <INDEX NAME="patch" UNIQUE="false" FIELDS="pack, patchid"/>
       </INDEXES>
     </TABLE>
