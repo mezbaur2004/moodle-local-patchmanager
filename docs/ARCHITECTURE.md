@@ -1,9 +1,10 @@
 # Patch Manager — Architecture & Data Flow
 
 Verified against the merged source of `local_patchmanager`, `local_zoomcustom`
-and `block_patchmanager` (`main`, checked 2026-09-22). Corrects the earlier
-30-section draft, which conflated target-version compatibility with the
-`OUTDATED` state — the two are unrelated in the actual code.
+and `block_patchmanager` (`main`, checked 2026-09-22, updated 2026-09-22 for
+the `can_restore()` fix in §13). Corrects the earlier 30-section draft, which
+conflated target-version compatibility with the `OUTDATED` state — the two
+are unrelated in the actual code.
 
 ## 1. Three components, one direction of knowledge
 
@@ -194,9 +195,13 @@ files in `mod_zoom`, authored and tested against `mod_zoom 2026082400`. No
 `002-…` patch exists yet — treat any such ID in planning docs as roadmap, not
 shipped.
 
-## 13. Known open gap (not yet fixed, flagged deliberately)
+## 13. Restore and CONFLICT — resolved
 
-`status::can_restore()` includes `CONFLICT`; the enforcement in `index.php`
-(`state::can_restore()`) excludes it. In `CONFLICT` the web UI currently
-offers a Restore button that the server then refuses — fails safe, but
-inconsistent. Left unfixed on purpose pending a decision on which is correct.
+`status::can_restore()` used to include `CONFLICT` while the server-side
+enforcement in `index.php` (`state::can_restore()`) excluded it, so the web
+UI could offer a Restore button the server then refused. Fixed:
+`status::can_restore()` now excludes `CONFLICT` too, for the same reason
+`state::can_restore()` always did — in `CONFLICT` none of the patch's
+markers are on disk, so there is nothing of the patch's own to remove, and
+writing a stored backup over the file would discard whatever upstream now
+ships there. The UI and the server gate agree on all six states.
