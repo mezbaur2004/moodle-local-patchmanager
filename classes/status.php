@@ -157,7 +157,9 @@ class status {
      * @return bool
      */
     public function can_restore(): bool {
-        $restorable = [state::APPLIED, state::OUTDATED, state::PARTIAL, state::CONFLICT];
+        // CONFLICT excluded to match state::can_restore(): none of our markers
+        // are on disk in that state, so there is nothing of ours to remove.
+        $restorable = [state::APPLIED, state::OUTDATED, state::PARTIAL];
         return in_array($this->state, $restorable, true) && $this->writable && $this->backupavailable;
     }
 
