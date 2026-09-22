@@ -256,6 +256,40 @@ class ui {
             $out .= \html_writer::tag('ul', implode('', $items));
         }
 
+        $out .= self::applyhint($status);
+
+        return $out;
+    }
+
+    /**
+     * CLI instruction for applying this already-registered customisation from
+     * the server.
+     *
+     * Purely informational: it does not depend on, and does not change, which
+     * actions the web UI offers, or whether $CFG->local_patchmanager_allowwebapply
+     * is on. It just gives an admin looking at one registered customisation's
+     * review screen the exact command that applies it, with its real
+     * pack:patchid key filled in.
+     *
+     * @param status $status
+     * @return string
+     */
+    public static function applyhint(status $status): string {
+        global $CFG;
+
+        $args = (object) ['key' => $status->definition->key()];
+
+        if (!empty($CFG->dirroot)) {
+            $args->dirroot = $CFG->dirroot;
+            $command = get_string('applycommand', 'local_patchmanager', $args);
+        } else {
+            $command = get_string('applycommand_nodirroot', 'local_patchmanager', $args);
+        }
+
+        $out = \html_writer::tag('h4', get_string('applyhintheading', 'local_patchmanager'));
+        $out .= \html_writer::tag('p', get_string('applyhint', 'local_patchmanager'), ['class' => 'small text-muted mb-1']);
+        $out .= \html_writer::tag('pre', s($command), ['class' => 'bg-light p-2 border small']);
+
         return $out;
     }
 

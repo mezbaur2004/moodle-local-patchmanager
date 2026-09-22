@@ -116,6 +116,12 @@ $string['hunkcounts'] = 'Anchor occurrences: {$a->anchor}, our block: {$a->paylo
 $string['expectedanchor'] = 'Expected upstream context:';
 $string['expectedpayload'] = 'Block this customisation inserts:';
 $string['planhashes'] = 'SHA-256 {$a->before} -> {$a->after}';
+$string['applyhintheading'] = 'Apply from the server';
+$string['applyhint'] = 'This customisation is already registered. To apply it from the server, run:';
+$string['applycommand'] = 'cd {$a->dirroot}
+sudo -u www-data php local/patchmanager/cli/apply.php --patch={$a->key}';
+$string['applycommand_nodirroot'] = 'Run from the Moodle root directory:
+sudo -u www-data php local/patchmanager/cli/apply.php --patch={$a->key}';
 
 // Environment.
 $string['environment'] = 'Environment';
