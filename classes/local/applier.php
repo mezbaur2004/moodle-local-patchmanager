@@ -375,7 +375,7 @@ class applier {
      *
      * @param definition $def
      * @param array $plan
-     * @param bool $pristine whether the current content is unpatched
+     * @param bool $pristine whether this operation is one that starts from unpatched files
      * @param \stdClass $result
      * @return void
      */
@@ -389,8 +389,17 @@ class applier {
 
         // Phase 1: back up every current file. Nothing has been written yet.
         foreach ($plan as $relpath => $entry) {
+            // Applying starts from unpatched files only while this is the sole
+            // patch on them. Once another patch is already applied to the same
+            // file, the content here still carries that patch's markers, and
+            // find_pristine() keys on the file rather than on the patch: storing
+            // this as pristine would hand a later restore a copy that already
+            // contains the other patch, which then gets re-applied on top of
+            // itself. Record what the content actually is.
+            $filepristine = $pristine && !preg_match(self::ANY_MARKER, $entry->old);
+
             try {
-                $record = backup::store($def, $relpath, $entry->old, $pristine, $reason, $entry->mode);
+                $record = backup::store($def, $relpath, $entry->old, $filepristine, $reason, $entry->mode);
             } catch (\Throwable $e) {
                 $result->messages[] = $e->getMessage();
                 return;

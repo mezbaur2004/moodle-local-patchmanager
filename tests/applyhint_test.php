@@ -39,7 +39,7 @@ final class applyhint_test extends \basic_testcase {
      *
      * @return status
      */
-    private function status(): status {
+    private function make_status(): status {
         $definition = new definition();
         $definition->pack = 'local_zoomcustom';
         $definition->id = '001-period-grading';
@@ -61,7 +61,7 @@ final class applyhint_test extends \basic_testcase {
     public function test_applyhint_shows_dynamic_key_and_dirroot(): void {
         global $CFG;
 
-        $html = ui::applyhint($this->status());
+        $html = ui::applyhint($this->make_status());
 
         $this->assertStringContainsString('cd ' . $CFG->dirroot, $html);
         $this->assertStringContainsString(
@@ -77,7 +77,7 @@ final class applyhint_test extends \basic_testcase {
      * @return void
      */
     public function test_applyhint_clarifies_it_applies_an_existing_patch(): void {
-        $html = ui::applyhint($this->status());
+        $html = ui::applyhint($this->make_status());
 
         $this->assertStringContainsString(
             get_string('applyhint', 'local_patchmanager'),
@@ -114,7 +114,7 @@ final class applyhint_test extends \basic_testcase {
      * @return void
      */
     public function test_review_includes_the_apply_hint(): void {
-        $html = ui::review($this->status());
+        $html = ui::review($this->make_status());
 
         $this->assertStringContainsString(
             'sudo -u www-data php local/patchmanager/cli/apply.php --patch=local_zoomcustom:001-period-grading',
