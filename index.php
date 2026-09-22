@@ -60,8 +60,19 @@ if ($action !== 'view') {
 
 // Writing to the code directory from the browser must be switched on in config.php.
 if (in_array($action, $writeactions, true) && !env::webapply_allowed()) {
-    $notifications[] = [get_string('errwebapplydisabled', 'local_patchmanager'), 'error'];
-    $notifications[] = [get_string('clihint', 'local_patchmanager', $action), 'info'];
+    $cliscript = ($action === 'restore') ? 'restore' : 'apply';
+    $verbkey = ($action === 'restore') ? 'errwebapplydisabled_restore' : 'errwebapplydisabled_apply';
+    $notifications[] = [get_string($verbkey, 'local_patchmanager'), 'error'];
+
+    if ($definition !== null) {
+        $hintargs = (object) ['script' => $cliscript, 'key' => $definition->key()];
+        if (!empty($CFG->dirroot)) {
+            $hintargs->dirroot = $CFG->dirroot;
+            $notifications[] = [get_string('clihint', 'local_patchmanager', $hintargs), 'info'];
+        } else {
+            $notifications[] = [get_string('clihint_nodirroot', 'local_patchmanager', $hintargs), 'info'];
+        }
+    }
     $action = 'view';
 }
 

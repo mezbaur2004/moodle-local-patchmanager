@@ -124,7 +124,8 @@ $string['envgit'] = 'The Moodle code directory is managed by Git. Applying a pat
 $string['envopcache'] = 'OPcache runs with validate_timestamps disabled. Reload PHP-FPM after applying or restoring a patch.';
 $string['envnode'] = 'This check inspected the files on node {$a}.';
 $string['envmultinode'] = 'On a multi-node deployment, patches must be applied on every node or through the deployment system. A check on one node proves nothing about the others.';
-$string['clihint'] = 'Run this from the server instead: php local/patchmanager/cli/{$a}.php --help';
+$string['clihint'] = 'Run this from the server instead: cd {$a->dirroot} && sudo -u www-data php local/patchmanager/cli/{$a->script}.php --patch={$a->key}';
+$string['clihint_nodirroot'] = 'Run this from the Moodle root directory: sudo -u www-data php local/patchmanager/cli/{$a->script}.php --patch={$a->key}';
 
 // Task and checks.
 $string['taskcheckstate'] = 'Check managed customisation state';
@@ -158,6 +159,8 @@ $string['errunexpectedstate'] = 'After writing, the state was "{$a}" instead of 
 $string['errverifystate'] = 'Only an active customisation can be verified. The current state is "{$a}".';
 $string['errnotsiteadmin'] = 'Only a site administrator may change managed code.';
 $string['errwebapplydisabled'] = 'Applying from the browser is disabled on this site.';
+$string['errwebapplydisabled_apply'] = 'Applying from the browser is disabled on this site.';
+$string['errwebapplydisabled_restore'] = 'Restoring from the browser is disabled on this site.';
 $string['errpostrequired'] = 'This action requires a form submission.';
 $string['errlock'] = 'Another patch operation is running. Try again shortly.';
 $string['erruninstallactive'] = 'Customisations are still on disk: {$a}. Restore them before uninstalling the patch manager.';
