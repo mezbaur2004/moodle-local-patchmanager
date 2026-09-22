@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_patchmanager';
-$plugin->version = 2026092003;
+$plugin->version = 2026092200;
 $plugin->requires = 2022112800; // Moodle 4.1.
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->release = '1.0.3 (Phase 1)';
+$plugin->release = '1.0.4 (Phase 1)';
