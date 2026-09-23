@@ -133,6 +133,37 @@ class status {
     }
 
     /**
+     * What to do next when the code is in place but not verified.
+     *
+     * Verification is tied to the installed target version, so after the target
+     * plugin is upgraded a successful apply lands here rather than in a current
+     * state. Packs may hold back behaviour until it is verified, and nothing on
+     * the apply path records that, so the administrator is told how to.
+     *
+     * @return string|null plain text, null when there is nothing to verify
+     */
+    public function verify_hint(): ?string {
+        global $CFG;
+
+        if ($this->state !== state::APPLIED || $this->verified) {
+            return null;
+        }
+
+        $args = (object) [
+            'key' => $this->key(),
+            'component' => $this->definition->component,
+            'version' => $this->componentversion->versiondisk ?? '?',
+        ];
+
+        if (!empty($CFG->dirroot)) {
+            $args->dirroot = $CFG->dirroot;
+            return get_string('verifyhint', 'local_patchmanager', $args);
+        }
+
+        return get_string('verifyhint_nodirroot', 'local_patchmanager', $args);
+    }
+
+    /**
      * May the administrator apply it now?
      *
      * @return bool

@@ -132,6 +132,8 @@ $string['envnode'] = 'This check inspected the files on node {$a}.';
 $string['envmultinode'] = 'On a multi-node deployment, patches must be applied on every node or through the deployment system. A check on one node proves nothing about the others.';
 $string['clihint'] = 'Run this from the server instead: cd {$a->dirroot} && sudo -u www-data php local/patchmanager/cli/{$a->script}.php --patch={$a->key}';
 $string['clihint_nodirroot'] = 'Run this from the Moodle root directory: sudo -u www-data php local/patchmanager/cli/{$a->script}.php --patch={$a->key}';
+$string['verifyhint'] = 'Applied, but not verified on {$a->component} {$a->version}. Anything that waits for verification, such as a pack\'s safety guard, stays on hold. Once you have checked it on this version, use "Mark as verified" or run: cd {$a->dirroot} && sudo -u www-data php local/patchmanager/cli/verify.php --patch={$a->key}';
+$string['verifyhint_nodirroot'] = 'Applied, but not verified on {$a->component} {$a->version}. Anything that waits for verification, such as a pack\'s safety guard, stays on hold. Once you have checked it on this version, use "Mark as verified" or run from the Moodle root directory: sudo -u www-data php local/patchmanager/cli/verify.php --patch={$a->key}';
 
 // Task and checks.
 $string['taskcheckstate'] = 'Check managed customisation state';

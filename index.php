@@ -219,6 +219,12 @@ if ($definition !== null && $confirm) {
                 get_string('action_' . $action, 'local_patchmanager')),
         $result->success ? 'success' : 'error',
     ];
+    if ($result->success && $action !== 'restore') {
+        $hint = api::build_status($definition)->verify_hint();
+        if ($hint !== null) {
+            $notifications[] = [$hint, 'warning'];
+        }
+    }
 }
 
 // Review screen.

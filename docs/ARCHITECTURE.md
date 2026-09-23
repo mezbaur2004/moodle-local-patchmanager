@@ -153,6 +153,13 @@ notify_packs() → local_zoomcustom_patchmanager_state_changed()
         if unsafe: pause it, record a window in local_zoomcustom_guard
 ```
 
+After a mod_zoom upgrade to a version outside the pack's `testedversions`,
+re-applying brings the code back as `APPLIED` but unverified, so the pause
+correctly stays. The guard's `taskpausedbyus` flag is kept throughout, and the
+task resumes on its own as soon as `verify.php` is run for the new version.
+`apply.php` and the apply/reapply result page print that command when this
+happens.
+
 This also runs on its own schedule (`guard_check`, */15) and via
 `check_state` (*/30), independent of any admin action — so a target-version
 upgrade that quietly invalidates verification is caught within 15 minutes
