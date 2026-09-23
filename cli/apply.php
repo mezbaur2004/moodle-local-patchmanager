@@ -108,6 +108,13 @@ foreach ($definitions as $key => $definition) {
 
     cli_writeln('    result: ' . ($result->success ? 'ok' : 'FAILED') . ', state: ' . $result->state);
 
+    if (!$dryrun && $result->success) {
+        $hint = api::build_status($definition)->verify_hint();
+        if ($hint !== null) {
+            cli_writeln('    ' . $hint);
+        }
+    }
+
     if (!empty($result->critical)) {
         cli_writeln('    CRITICAL: rollback failed, manual recovery required. See the backup paths above.');
     }
