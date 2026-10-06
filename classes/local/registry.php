@@ -23,7 +23,7 @@ namespace local_patchmanager\local;
  * in its lib.php. The engine knows nothing about what the patches do.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class registry {

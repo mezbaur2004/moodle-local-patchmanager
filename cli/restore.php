@@ -20,7 +20,7 @@
  * The patch is never reverse applied.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

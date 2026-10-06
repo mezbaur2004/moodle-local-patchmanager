@@ -26,7 +26,7 @@ use local_patchmanager\status;
  * patch expects and what is actually on disk, and nothing more.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ui {

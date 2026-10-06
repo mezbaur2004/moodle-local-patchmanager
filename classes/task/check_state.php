@@ -27,7 +27,7 @@ use local_patchmanager\local\registry;
  * administrative or deployment action.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class check_state extends \core\task\scheduled_task {

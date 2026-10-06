@@ -23,7 +23,7 @@ use local_patchmanager\local\util;
  * Tests for exact matching, insertion and state aggregation.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \local_patchmanager\local\hunk
  * @covers     \local_patchmanager\local\util

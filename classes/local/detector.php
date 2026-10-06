@@ -24,7 +24,7 @@ use local_patchmanager\state;
  * Nothing here reads a stored state. The database is history only.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class detector {
