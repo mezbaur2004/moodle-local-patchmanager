@@ -28,7 +28,7 @@ use local_patchmanager\local\definition;
  * mapping cannot drift apart silently.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \local_patchmanager\local\definition
  */
@@ -74,10 +74,10 @@ final class webapply_notice_test extends \basic_testcase {
         $applyargs = (object) [
             'script' => 'apply',
             'key' => $definition->key(),
-            'dirroot' => '/var/www/html/student.pedagoacademy.com',
+            'dirroot' => '/var/www/html/moodle',
         ];
         $this->assertSame(
-            'Run this from the server instead: cd /var/www/html/student.pedagoacademy.com '
+            'Run this from the server instead: cd /var/www/html/moodle '
                 . '&& sudo -u www-data php local/patchmanager/cli/apply.php '
                 . '--patch=local_zoomcustom:001-period-grading',
             get_string('clihint', 'local_patchmanager', $applyargs)
@@ -86,10 +86,10 @@ final class webapply_notice_test extends \basic_testcase {
         $restoreargs = (object) [
             'script' => 'restore',
             'key' => $definition->key(),
-            'dirroot' => '/var/www/html/student.pedagoacademy.com',
+            'dirroot' => '/var/www/html/moodle',
         ];
         $this->assertSame(
-            'Run this from the server instead: cd /var/www/html/student.pedagoacademy.com '
+            'Run this from the server instead: cd /var/www/html/moodle '
                 . '&& sudo -u www-data php local/patchmanager/cli/restore.php '
                 . '--patch=local_zoomcustom:001-period-grading',
             get_string('clihint', 'local_patchmanager', $restoreargs)

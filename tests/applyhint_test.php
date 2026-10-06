@@ -27,7 +27,7 @@ use local_patchmanager\output\ui;
  * and of every existing Apply/Remove/Reapply/Verify/Acknowledge behaviour.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \local_patchmanager\output\ui
  */

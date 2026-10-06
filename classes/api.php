@@ -29,7 +29,7 @@ use local_patchmanager\local\registry;
  * scheduled task all go through here, so there is only one implementation.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class api {

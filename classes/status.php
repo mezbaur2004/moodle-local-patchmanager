@@ -24,7 +24,7 @@ use local_patchmanager\local\definition;
  * Packs consume this object. It is rebuilt from disk on every call.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class status {

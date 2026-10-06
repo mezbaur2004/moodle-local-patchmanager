@@ -20,7 +20,7 @@ namespace local_patchmanager\local;
  * Environment facts that affect what the manager may do and what it must warn about.
  *
  * @package    local_patchmanager
- * @copyright  2026 Pedago Academy
+ * @copyright  2026 Mezbaur Are Rafi
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class env {
